@@ -5,7 +5,7 @@ library(caTools)
 library(tibble)
 library(tidyverse)
 # reading the appointment1000.csv in R
-appoint=read.table("D:/Documents/UNE/Trimester-4/STAT430 - Statistical Learning/Assignment-1/appointment1000.csv", header = TRUE,sep=",")
+appoint=read_xlsx(file.choose())
 # declaring number of folds
 M <- 10
 # getting the dimension of the dataset

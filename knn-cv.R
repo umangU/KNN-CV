@@ -21,47 +21,47 @@ colnames(cv_error_df) <- str_replace(colnames(cv_error_df), 'V', 'fold')
 for(m in 1:M)
 {
   points<-floor(n*(M-1)/M)
-  # dividing the dataset into train and test indices<-sample(x=1:n, size=points, replace=FALSE) train.index <- appoint[indices,]
+  # Dividing the dataset into train and test indices<-sample(x=1:n, size=points, replace=FALSE) train.index <- appoint[indices,]
   test.index <- appoint[-indices,]
   # looping through all the k values
   for(i in 1:num_k)
   {
     k<-k_values[i]
-    # seperating the train and test data
+    # Seperating the train and test data
     train.X <- train.index %>% select(-No.show)
     train.show <- train.index$No.show # turn into a vector test.X <- test.index %>% select(-No.show)
     test.show <- test.index$No.show # turn into a vector
-    # using knn classifier on the training data
+    # Using knn classifier on the training data
     knn_train_prediction <- knn(train.X,train.X,train.show, k=k) # using knn classifier on the test data
     knn_test_prediction <- knn(train.X,test.X,train.show,k=k)
-    # getting the train and test error
+    # Getting the train and test error
     tr_err <- mean(knn_train_prediction!=train.show) ts_err <- mean(knn_test_prediction!=test.show)
-    # storing the train and test prediction error as a list
+    # Storing the train and test prediction error as a list
     cv_error<-list(tr=tr_err,ts=ts_err)
     cv_error_df[i, paste0('fold',m)] <- cv_error[['ts']]
     error_df[i, 'k'] <- k
     error_df[i, 'tr'] <- cv_error[['tr']]
     error_df[i, 'ts'] <- cv_error[['ts']]
   } }
-# plotting the the cross validation error against the value of k
+# Plotting the the cross validation error against the value of k
 cv_error_df %>%
   gather(key='type', value='error', contains('fold')) %>% ggplot() +
   geom_point(aes(x=k, y=error, color=type, shape=type)) + geom_line(aes(x=k, y=error, color=type, linetype=type))+ ggtitle('knn cross validation')
-# compute the mean cv error for each value of k
+# Compute the mean cv error for each value of k
 cv_mean_error <- cv_error_df %>%
   select(-k) %>%
   rowMeans()
-# getting the mean errors for all values of k
+# Getting the mean errors for all values of k
 error_df <- error_df %>%
   add_column(cv=cv_mean_error)
-# printing the mean errors for all values of k
+# Printing the mean errors for all values of k
 error_df
-# printing the minimum cv errors on the training data for all values of k
+# Printing the minimum cv errors on the training data for all values of k
 error_df %>%
   filter(tr==min(tr))
-# printing the minimum cv errors on the test data for all values of k
+# Printing the minimum cv errors on the test data for all values of k
 error_df %>%
   filter(ts==min(ts))
-# printing the minimum cross validation error rate and respective value of k
+# Printing the minimum cross validation error rate and respective value of k
 error_df %>%
   filter(cv==min(cv))

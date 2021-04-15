@@ -1,23 +1,23 @@
-# loading the libraries class and caTools for knn() and sample.split() respectively
+# Loading the libraries class and caTools for knn() and sample.split() respectively
 library(class)
 library(caTools)
-# loading the libraries tibble and tiddyverse for the tibble() and ggplot() respectively
+# Loading the libraries tibble and tiddyverse for the tibble() and ggplot() respectively
 library(tibble)
 library(tidyverse)
-# reading the appointment1000.csv in R
+# Reading the appointment1000.csv in R
 appoint=read_xlsx(file.choose())
-# declaring number of folds
+# Declaring number of folds
 M <- 10
-# getting the dimension of the dataset
+# Getting the dimension of the dataset
 n<-dim(appoint)[1]
-# declaring the k-values
+# Declaring the k-values
 k_values <- c(3, 7, 9, seq(from=1, to=200, by=4)) num_k=length(k_values)
-# creating a dataframe to store the cross validation errors error_df <- tibble(k=rep(0, num_k), tr=rep(0, num_k), ts=rep(0, num_k))
+# Creating a dataframe to store the cross validation errors error_df <- tibble(k=rep(0, num_k), tr=rep(0, num_k), ts=rep(0, num_k))
 cv_error_df <- matrix(0, nrow=num_k, ncol=M) %>% as_tibble() %>%
   add_column(k=k_values)
-# make column names nice
+# Make column names nice
 colnames(cv_error_df) <- str_replace(colnames(cv_error_df), 'V', 'fold')
-# looping through all the M = 10 folds
+# Looping through all the M = 10 folds
 for(m in 1:M)
 {
   points<-floor(n*(M-1)/M)

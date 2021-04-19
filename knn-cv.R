@@ -15,6 +15,7 @@ M <- 10
 n<-dim(appoint)[1]
 # Declaring the k-values
 k_values <- c(3, 7, 9, seq(from=1, to=200, by=4)) num_k=length(k_values)
+
 # Creating a dataframe to store the cross validation errors error_df <- tibble(k=rep(0, num_k), tr=rep(0, num_k), ts=rep(0, num_k))
 cv_error_df <- matrix(0, nrow=num_k, ncol=M) %>% as_tibble() %>%
   add_column(k=k_values)
@@ -42,13 +43,16 @@ for(m in 1:M)
     test.X <- test.index %>% select(-No.show)
     test.show <- test.index$No.show 
     # turn into a vector
+    
     # Using knn classifier on the training data
     knn_train_prediction <- knn(train.X,train.X,train.show, k=k) 
     # using knn classifier on the test data
     knn_test_prediction <- knn(train.X,test.X,train.show,k=k)
+    
     # Getting the train and test error
     tr_err <- mean(knn_train_prediction!=train.show) 
     ts_err <- mean(knn_test_prediction!=test.show)
+    
     # Storing the train and test prediction error as a list
     cv_error<-list(tr=tr_err,ts=ts_err)
     cv_error_df[i, paste0('fold',m)] <- cv_error[['ts']]
@@ -70,14 +74,18 @@ cv_mean_error <- cv_error_df %>%
 # Getting the mean errors for all values of k
 error_df <- error_df %>%
   add_column(cv=cv_mean_error)
+
 # Printing the mean errors for all values of k
 error_df
+
 # Printing the minimum cv errors on the training data for all values of k
 error_df %>%
   filter(tr==min(tr))
+
 # Printing the minimum cv errors on the test data for all values of k
 error_df %>%
   filter(ts==min(ts))
+
 # Printing the minimum cross validation error rate and respective value of k
 error_df %>%
   filter(cv==min(cv))

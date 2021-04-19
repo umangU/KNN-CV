@@ -1,11 +1,14 @@
 # Loading the libraries class and caTools for knn() and sample.split() respectively
 library(class)
 library(caTools)
+
 # Loading the libraries tibble and tiddyverse for the tibble() and ggplot() respectively
 library(tibble)
 library(tidyverse)
+
 # Reading the appointment1000.csv in R
 appoint=read_xlsx(file.choose())
+
 # Declaring number of folds
 M <- 10
 # Getting the dimension of the dataset
@@ -17,12 +20,14 @@ cv_error_df <- matrix(0, nrow=num_k, ncol=M) %>% as_tibble() %>%
   add_column(k=k_values)
 # Make column names nice
 colnames(cv_error_df) <- str_replace(colnames(cv_error_df), 'V', 'fold')
+
 # Looping through all the M = 10 folds
 for(m in 1:M)
 {
   points<-floor(n*(M-1)/M)
   # Dividing the dataset into train and test indices<-sample(x=1:n, size=points, replace=FALSE) train.index <- appoint[indices,]
   test.index <- appoint[-indices,]
+  
   # looping through all the k values
   for(i in 1:num_k)
   {
@@ -43,14 +48,17 @@ for(m in 1:M)
     error_df[i, 'tr'] <- cv_error[['tr']]
     error_df[i, 'ts'] <- cv_error[['ts']]
   } }
+
 # Plotting the the cross validation error against the value of k
 cv_error_df %>%
   gather(key='type', value='error', contains('fold')) %>% ggplot() +
   geom_point(aes(x=k, y=error, color=type, shape=type)) + geom_line(aes(x=k, y=error, color=type, linetype=type))+ ggtitle('knn cross validation')
+
 # Compute the mean cv error for each value of k
 cv_mean_error <- cv_error_df %>%
   select(-k) %>%
   rowMeans()
+
 # Getting the mean errors for all values of k
 error_df <- error_df %>%
   add_column(cv=cv_mean_error)

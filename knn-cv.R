@@ -25,7 +25,10 @@ colnames(cv_error_df) <- str_replace(colnames(cv_error_df), 'V', 'fold')
 for(m in 1:M)
 {
   points<-floor(n*(M-1)/M)
-  # Dividing the dataset into train and test indices<-sample(x=1:n, size=points, replace=FALSE) train.index <- appoint[indices,]
+  
+  # Dividing the dataset into train and test 
+  indices<-sample(x=1:n, size=points, replace=FALSE) 
+  train.index <- appoint[indices,]
   test.index <- appoint[-indices,]
   
   # looping through all the k values
@@ -34,13 +37,18 @@ for(m in 1:M)
     k<-k_values[i]
     # Seperating the train and test data
     train.X <- train.index %>% select(-No.show)
-    train.show <- train.index$No.show # turn into a vector test.X <- test.index %>% select(-No.show)
-    test.show <- test.index$No.show # turn into a vector
+    train.show <- train.index$No.show 
+    # turn into a vector 
+    test.X <- test.index %>% select(-No.show)
+    test.show <- test.index$No.show 
+    # turn into a vector
     # Using knn classifier on the training data
-    knn_train_prediction <- knn(train.X,train.X,train.show, k=k) # using knn classifier on the test data
+    knn_train_prediction <- knn(train.X,train.X,train.show, k=k) 
+    # using knn classifier on the test data
     knn_test_prediction <- knn(train.X,test.X,train.show,k=k)
     # Getting the train and test error
-    tr_err <- mean(knn_train_prediction!=train.show) ts_err <- mean(knn_test_prediction!=test.show)
+    tr_err <- mean(knn_train_prediction!=train.show) 
+    ts_err <- mean(knn_test_prediction!=test.show)
     # Storing the train and test prediction error as a list
     cv_error<-list(tr=tr_err,ts=ts_err)
     cv_error_df[i, paste0('fold',m)] <- cv_error[['ts']]
